@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<defs>
+<linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset="1" stop-color="#97a1ac"/></linearGradient>
+<linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b6c0ca"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd35f"/><stop offset="1" stop-color="#1b8226"/></linearGradient>
+</defs>
+<rect x="5" y="6" width="44" height="50" rx="5" fill="url(#b)" stroke="#55606b" stroke-width="2"/>
+<circle cx="25" cy="27" r="15" fill="url(#p)" stroke="#66717c" stroke-width="2"/>
+<circle cx="25" cy="27" r="3" fill="#66717c"/>
+<path d="M43 13 L30 30" stroke="#37414b" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="43" cy="13" r="3" fill="#37414b"/>
+<path d="M44 30 L59 35 L59 46 C59 54 52 59 44 62 C36 59 29 54 29 46 L29 35 Z" fill="url(#s)" stroke="#156b1f" stroke-width="2" stroke-linejoin="round"/>
+<path d="M37 46 L42 51 L52 40" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

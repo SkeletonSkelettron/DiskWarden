@@ -1,0 +1,3 @@
+LogPage {
+    alerts: true
+}
