@@ -77,3 +77,7 @@ cmake --build build
 ## Status
 
 This is an early version. Monitoring, health, the pages, alerts, themes and the tray work on the developer's machine with S-ATA hard disks and NVMe SSDs. The self-tests and the surface test need the administrator password and haven't been run on a real disk yet. USB disks behind bridges that don't pass S.M.A.R.T. through show an unknown health.
+
+## License
+
+DiskWarden is free software, released under the [GNU General Public License version 2](LICENSE) (GPL-2.0-only).
