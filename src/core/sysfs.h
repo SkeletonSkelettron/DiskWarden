@@ -4,7 +4,7 @@
 #include <QtGlobal>
 #include <limits>
 
-namespace dw {
+namespace hg {
 
 struct LinkInfo {
     QString interfaceName;   // "S-ATA", "NVMe", "USB"
@@ -39,4 +39,4 @@ QString pcieGeneration(double gts);
 // Looks up a PCI device name in the hwdata pci.ids database.
 QString pciDeviceName(quint16 vendor, quint16 device);
 
-} // namespace dw
+} // namespace hg

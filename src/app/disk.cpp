@@ -252,17 +252,17 @@ void Disk::update(const DBusManagedObjects &objects)
     if (m_device.isEmpty())
         m_device = device;
     m_blockName = QFileInfo(device).fileName();
-    m_link = dw::readLinkInfo(m_blockName);
-    m_queue = dw::readQueueInfo(m_blockName);
+    m_link = hg::readLinkInfo(m_blockName);
+    m_queue = hg::readQueueInfo(m_blockName);
 
     if (m_hasNvme)
-        m_kind = dw::DiskKind::Nvme;
+        m_kind = hg::DiskKind::Nvme;
     else if (m_rotationRate > 0)
-        m_kind = dw::DiskKind::Hdd;
+        m_kind = hg::DiskKind::Hdd;
     else if (m_rotationRate == 0)
-        m_kind = dw::DiskKind::Ssd;
+        m_kind = hg::DiskKind::Ssd;
     else
-        m_kind = m_queue.rotational ? dw::DiskKind::Hdd : dw::DiskKind::Ssd;
+        m_kind = m_queue.rotational ? hg::DiskKind::Hdd : hg::DiskKind::Ssd;
 
     m_key = m_driveProps.value(QStringLiteral("Id")).toString();
     if (m_key.isEmpty())
@@ -412,10 +412,10 @@ bool Disk::smartAvailable() const
         && m_ataProps.value(QStringLiteral("SmartEnabled")).toBool();
 }
 
-dw::HealthInput Disk::healthInput() const
+hg::HealthInput Disk::healthInput() const
 {
     AppSettings *settings = AppSettings::instance();
-    dw::HealthInput in;
+    hg::HealthInput in;
     in.kind = m_kind;
     in.model = m_model;
     in.smartAvailable = smartAvailable();
@@ -436,7 +436,7 @@ dw::HealthInput Disk::healthInput() const
     HistoryDb &db = HistoryDb::instance();
     if (m_diskId >= 0) {
         in.hotDays = db.hotDays(m_diskId, in.temperatureWarning);
-        if (const dw::SmartAttribute *crc = dw::findAttribute(m_attributes, 199); crc && crc->rawKnown) {
+        if (const hg::SmartAttribute *crc = hg::findAttribute(m_attributes, 199); crc && crc->rawKnown) {
             qint64 past = db.rawValueAt(m_diskId, 199, QDateTime::currentDateTime().addDays(-30));
             if (past >= 0)
                 in.recentCrcErrors = std::max<qint64>(0, (crc->raw & 0xFFFFFFFF) - (past & 0xFFFFFFFF));
@@ -451,7 +451,7 @@ QList<SmartAttributeModel::Row> Disk::smartRows() const
     if (m_hasNvme) {
         if (!m_nvme.valid)
             return rows;
-        const dw::NvmeHealth &n = m_nvme;
+        const hg::NvmeHealth &n = m_nvme;
         int number = 0;
         auto add = [&](const QString &name, qint64 raw, const QString &unit, int level = 0, int threshold = -1, int value = -1) {
             SmartAttributeModel::Row row;
@@ -466,7 +466,7 @@ QList<SmartAttributeModel::Row> Disk::smartRows() const
             row.status = level >= 2 ? tr("Failing") : level == 1 ? tr("Warning") : tr("OK");
             rows << row;
         };
-        const int warnings = n.criticalWarning & ~dw::NvmeTemperature;
+        const int warnings = n.criticalWarning & ~hg::NvmeTemperature;
         add(tr("Critical Warning"), n.criticalWarning, QString(), warnings ? 2 : (n.criticalWarning ? 1 : 0));
         add(tr("Composite Temperature"), std::isnan(n.temperature) ? -1 : qRound64(n.temperature), QStringLiteral("°C"),
             !std::isnan(n.temperature) && !std::isnan(n.warningTemperature) && n.temperature >= n.warningTemperature ? 1 : 0,
@@ -477,9 +477,9 @@ QList<SmartAttributeModel::Row> Disk::smartRows() const
         add(tr("Percentage Used"), n.percentUsed, QStringLiteral("%"), n.percentUsed >= 100 ? 2 : n.percentUsed >= 90 ? 1 : 0,
             -1, n.percentUsed >= 0 ? std::max(0, 100 - n.percentUsed) : -1);
         add(tr("Data Units Read"), n.bytesRead >= 0 ? n.bytesRead / 512000 : -1,
-            tr("units (%1)").arg(dw::formatData(n.bytesRead)));
+            tr("units (%1)").arg(hg::formatData(n.bytesRead)));
         add(tr("Data Units Written"), n.bytesWritten >= 0 ? n.bytesWritten / 512000 : -1,
-            tr("units (%1)").arg(dw::formatData(n.bytesWritten)));
+            tr("units (%1)").arg(hg::formatData(n.bytesWritten)));
         add(tr("Controller Busy Time"), n.controllerBusyMinutes, tr("min"));
         add(tr("Power Cycles"), n.powerCycles, QString());
         add(tr("Power On Hours"), n.powerOnHours, tr("h"));
@@ -494,8 +494,8 @@ QList<SmartAttributeModel::Row> Disk::smartRows() const
         return rows;
     }
 
-    const dw::HealthInput input = healthInput();
-    for (const dw::SmartAttribute &a : m_attributes) {
+    const hg::HealthInput input = healthInput();
+    for (const hg::SmartAttribute &a : m_attributes) {
         SmartAttributeModel::Row row;
         row.attribute = a;
         if (a.preFailure() && a.failingNow()) {
@@ -505,7 +505,7 @@ QList<SmartAttributeModel::Row> Disk::smartRows() const
             row.level = 1;
             row.status = tr("Failed in the past");
         } else {
-            if (dw::HealthCalculator::attributeDeduction(a.id, dw::HealthCalculator::healthCount(input, a)) > 0)
+            if (hg::HealthCalculator::attributeDeduction(a.id, hg::HealthCalculator::healthCount(input, a)) > 0)
                 row.level = 1;
             row.status = a.threshold <= 0 ? tr("OK (Always passing)") : tr("OK");
         }
@@ -522,7 +522,7 @@ void Disk::updateSmartModel()
 
 void Disk::recompute(bool record)
 {
-    m_result = dw::HealthCalculator::evaluate(healthInput());
+    m_result = hg::HealthCalculator::evaluate(healthInput());
     updateSmartModel();
     if (record && smartAvailable() && m_diskId >= 0) {
         logChanges();
@@ -545,7 +545,7 @@ void Disk::recordHistory()
         db.addTemperature(m_diskId, now, m_temperature);
     db.addHealth(m_diskId, now, m_result.health, m_result.performance);
     if (m_hasNvme) {
-        QList<dw::SmartAttribute> rows;
+        QList<hg::SmartAttribute> rows;
         for (const SmartAttributeModel::Row &row : smartRows())
             rows << row.attribute;
         db.addAttributes(m_diskId, now, rows);
@@ -563,7 +563,7 @@ void Disk::logChanges()
         m_lastRawLoaded = true;
     }
 
-    QList<dw::SmartAttribute> current;
+    QList<hg::SmartAttribute> current;
     QList<int> watched;
     if (m_hasNvme) {
         for (const SmartAttributeModel::Row &row : smartRows())
@@ -575,7 +575,7 @@ void Disk::logChanges()
     }
     const QLocale locale;
     for (int id : std::as_const(watched)) {
-        const dw::SmartAttribute *a = dw::findAttribute(current, id);
+        const hg::SmartAttribute *a = hg::findAttribute(current, id);
         if (!a || !a->rawKnown)
             continue;
         const qint64 previous = m_lastRaw.value(id, -1);
@@ -630,15 +630,15 @@ void Disk::checkAlerts()
     AppSettings *settings = AppSettings::instance();
 
     bool failure = m_hasAta && m_ataProps.value(QStringLiteral("SmartFailing")).toBool();
-    for (const dw::SmartAttribute &a : std::as_const(m_attributes))
+    for (const hg::SmartAttribute &a : std::as_const(m_attributes))
         failure = failure || (a.preFailure() && a.failingNow() && !settings->disabledAttributes(m_key).contains(a.id));
     if (m_hasNvme)
-        failure = failure || (m_nvme.criticalWarning & ~dw::NvmeTemperature);
+        failure = failure || (m_nvme.criticalWarning & ~hg::NvmeTemperature);
     if (settings->alertFailure())
         raiseAlert(QStringLiteral("failure"), failure ? 2 : 0, tr("The disk predicts its own failure. Back up your data now."));
 
     if (settings->alertHealth()) {
-        const int level = dw::healthLevel(m_result.health, settings->healthWarning(), settings->healthCritical());
+        const int level = hg::healthLevel(m_result.health, settings->healthWarning(), settings->healthCritical());
         raiseAlert(QStringLiteral("health"), level,
                    level >= 2 ? tr("The health of the disk is critical: %1 %").arg(m_result.health)
                               : tr("The health of the disk is low: %1 %").arg(m_result.health));
@@ -667,7 +667,7 @@ void Disk::checkAlerts()
             const double percent = 100.0 * v.free / v.total;
             raiseAlert(QStringLiteral("space:") + v.device, percent < settings->freeSpacePercent() ? 1 : 0,
                        tr("Low free space on %1: %2 (%3 %)")
-                           .arg(v.mountPoints.value(0, v.device), dw::formatSize(v.free))
+                           .arg(v.mountPoints.value(0, v.device), hg::formatSize(v.free))
                            .arg(qRound(percent)));
         }
     }
@@ -675,7 +675,7 @@ void Disk::checkAlerts()
 
 double Disk::readTemperature() const
 {
-    double t = dw::readHwmonTemperature(m_blockName);
+    double t = hg::readHwmonTemperature(m_blockName);
     if (!std::isnan(t))
         return t;
     double kelvin = 0;
@@ -690,7 +690,7 @@ double Disk::readTemperature() const
 
 void Disk::pollTemperature()
 {
-    double t = dw::readHwmonTemperature(m_blockName);
+    double t = hg::readHwmonTemperature(m_blockName);
     if (std::isnan(t) || std::abs(t - m_temperature) < 0.5)
         return;
     m_temperature = t;
@@ -773,7 +773,7 @@ QList<QPointF> Disk::attributeSeries(int id, bool normalized) const
     return m_diskId >= 0 ? HistoryDb::instance().attributeSeries(m_diskId, id, normalized) : QList<QPointF>();
 }
 
-void Disk::addPerfSample(const dw::DiskRates &rates, qint64 nowMs, double intervalMs)
+void Disk::addPerfSample(const hg::DiskRates &rates, qint64 nowMs, double intervalMs)
 {
     m_readRate = rates.readBytesPerSecond;
     m_writeRate = rates.writeBytesPerSecond;
@@ -835,8 +835,8 @@ QVariantList Disk::volumes() const
         map.insert(QStringLiteral("device"), v.device);
         map.insert(QStringLiteral("total"), v.total);
         map.insert(QStringLiteral("free"), v.free);
-        map.insert(QStringLiteral("sizeText"), dw::formatSize(v.total));
-        map.insert(QStringLiteral("freeText"), v.free >= 0 ? dw::formatSize(v.free) : QString());
+        map.insert(QStringLiteral("sizeText"), hg::formatSize(v.total));
+        map.insert(QStringLiteral("freeText"), v.free >= 0 ? hg::formatSize(v.free) : QString());
         map.insert(QStringLiteral("usedFraction"), v.total > 0 && v.free >= 0 ? 1.0 - double(v.free) / v.total : 0.0);
         map.insert(QStringLiteral("diskIndex"), m_index);
         list << map;
@@ -869,19 +869,19 @@ void Disk::setComment(const QString &comment)
 
 QString Disk::sizeText() const
 {
-    return dw::formatSize(m_size);
+    return hg::formatSize(m_size);
 }
 
 QString Disk::kindText() const
 {
     switch (m_kind) {
-    case dw::DiskKind::Hdd:
+    case hg::DiskKind::Hdd:
         return tr("Hard disk drive (HDD)");
-    case dw::DiskKind::Ssd:
+    case hg::DiskKind::Ssd:
         return tr("Solid state drive (SSD)");
-    case dw::DiskKind::Nvme:
+    case hg::DiskKind::Nvme:
         return tr("NVMe solid state drive");
-    case dw::DiskKind::Unknown:
+    case hg::DiskKind::Unknown:
         break;
     }
     return tr("Disk");
@@ -901,12 +901,12 @@ QString Disk::linkText() const
 
 QString Disk::healthRating() const
 {
-    return dw::ratingWord(m_result.health);
+    return hg::ratingWord(m_result.health);
 }
 
 QString Disk::performanceRating() const
 {
-    return dw::ratingWord(m_result.performance);
+    return hg::ratingWord(m_result.performance);
 }
 
 int Disk::statusLevel() const
@@ -914,7 +914,7 @@ int Disk::statusLevel() const
     if (!smartAvailable())
         return -1;
     AppSettings *settings = AppSettings::instance();
-    int level = dw::healthLevel(m_result.health, settings->healthWarning(), settings->healthCritical());
+    int level = hg::healthLevel(m_result.health, settings->healthWarning(), settings->healthCritical());
     if (m_hasAta && m_ataProps.value(QStringLiteral("SmartFailing")).toBool())
         level = 2;
     return level;
@@ -928,7 +928,7 @@ qint64 Disk::powerOnHours() const
         qint64 seconds = m_ataProps.value(QStringLiteral("SmartPowerOnSeconds")).toLongLong();
         if (seconds > 0)
             return seconds / 3600;
-        if (const dw::SmartAttribute *a = dw::findAttribute(m_attributes, 9); a && a->rawKnown)
+        if (const hg::SmartAttribute *a = hg::findAttribute(m_attributes, 9); a && a->rawKnown)
             return a->raw;
     }
     return -1;
@@ -936,19 +936,19 @@ qint64 Disk::powerOnHours() const
 
 QString Disk::powerOnText() const
 {
-    return dw::formatPowerOnTime(powerOnHours());
+    return hg::formatPowerOnTime(powerOnHours());
 }
 
 QString Disk::remainingText() const
 {
-    return dw::formatRemainingDays(m_result.remainingDays);
+    return hg::formatRemainingDays(m_result.remainingDays);
 }
 
 qint64 Disk::startStopCount() const
 {
-    if (m_kind != dw::DiskKind::Hdd)
+    if (m_kind != hg::DiskKind::Hdd)
         return -1;
-    const dw::SmartAttribute *a = dw::findAttribute(m_attributes, 4);
+    const hg::SmartAttribute *a = hg::findAttribute(m_attributes, 4);
     return a && a->rawKnown ? (a->raw & 0xFFFFFFFF) : -1;
 }
 
@@ -956,11 +956,11 @@ qint64 Disk::lifetimeWritten() const
 {
     if (m_hasNvme)
         return m_nvme.bytesWritten;
-    const dw::SmartAttribute *a = dw::findAttribute(m_attributes, 241);
+    const hg::SmartAttribute *a = hg::findAttribute(m_attributes, 241);
     if (!a || !a->rawKnown || a->raw <= 0)
         return -1;
     // Intel SSDs count in 32 MiB units, the others in sectors.
-    if (m_kind == dw::DiskKind::Ssd && m_model.contains(QLatin1String("INTEL"), Qt::CaseInsensitive))
+    if (m_kind == hg::DiskKind::Ssd && m_model.contains(QLatin1String("INTEL"), Qt::CaseInsensitive))
         return a->raw * 32 * 1024 * 1024;
     return a->raw * std::max(512, m_queue.logicalBlockSize);
 }
@@ -969,10 +969,10 @@ qint64 Disk::lifetimeRead() const
 {
     if (m_hasNvme)
         return m_nvme.bytesRead;
-    const dw::SmartAttribute *a = dw::findAttribute(m_attributes, 242);
+    const hg::SmartAttribute *a = hg::findAttribute(m_attributes, 242);
     if (!a || !a->rawKnown || a->raw <= 0)
         return -1;
-    if (m_kind == dw::DiskKind::Ssd && m_model.contains(QLatin1String("INTEL"), Qt::CaseInsensitive))
+    if (m_kind == hg::DiskKind::Ssd && m_model.contains(QLatin1String("INTEL"), Qt::CaseInsensitive))
         return a->raw * 32 * 1024 * 1024;
     return a->raw * std::max(512, m_queue.logicalBlockSize);
 }
@@ -980,13 +980,13 @@ qint64 Disk::lifetimeRead() const
 QString Disk::lifetimeWritesText() const
 {
     const qint64 bytes = lifetimeWritten();
-    return bytes >= 0 ? dw::formatData(bytes) : QString();
+    return bytes >= 0 ? hg::formatData(bytes) : QString();
 }
 
 QString Disk::lifetimeReadsText() const
 {
     const qint64 bytes = lifetimeRead();
-    return bytes >= 0 ? dw::formatData(bytes) : QString();
+    return bytes >= 0 ? hg::formatData(bytes) : QString();
 }
 
 QString Disk::displayName() const
@@ -1189,7 +1189,7 @@ void Disk::rebuildInfo()
         add(tr("Controller State"), m_nvmeProps.value(QStringLiteral("State")).toString());
         const qint64 unallocated = m_nvmeProps.value(QStringLiteral("UnallocatedCapacity")).toLongLong();
         if (unallocated > 0)
-            add(tr("Unallocated Capacity"), dw::formatSize(unallocated));
+            add(tr("Unallocated Capacity"), hg::formatSize(unallocated));
         if (!std::isnan(m_nvme.warningTemperature))
             add(tr("Warning Composite Temperature Threshold"), temperatureText(m_nvme.warningTemperature));
         if (!std::isnan(m_nvme.criticalTemperature))
@@ -1221,7 +1221,7 @@ void Disk::rebuildInfo()
             }
             auto blocks = [&](const char *key) {
                 const qint64 n = m_namespaceProps.value(QLatin1String(key)).toLongLong();
-                return lbaSize > 0 ? tr("%1 sectors (%2)").arg(locale.toString(n), dw::formatSize(n * lbaSize))
+                return lbaSize > 0 ? tr("%1 sectors (%2)").arg(locale.toString(n), hg::formatSize(n * lbaSize))
                                    : locale.toString(n);
             };
             add(tr("Namespace Size"), blocks("NamespaceSize"));
@@ -1238,12 +1238,12 @@ void Disk::rebuildInfo()
     add(tr("Write Cache Mode"), m_queue.writeCache);
     if (m_queue.queueDepth > 0)
         add(tr("Queue Depth"), QString::number(m_queue.queueDepth));
-    add(tr("Discard Maximum"), m_queue.discardMaxBytes > 0 ? dw::formatSize(m_queue.discardMaxBytes) : tr("Not supported"));
+    add(tr("Discard Maximum"), m_queue.discardMaxBytes > 0 ? hg::formatSize(m_queue.discardMaxBytes) : tr("Not supported"));
 
     section = tr("Partitions");
     for (const VolumeInfo &p : std::as_const(m_partitions)) {
         QStringList parts;
-        parts << dw::formatSize(p.size);
+        parts << hg::formatSize(p.size);
         if (!p.fsType.isEmpty())
             parts << p.fsType;
         if (!p.label.isEmpty())

@@ -14,7 +14,7 @@ namespace {
 QString autostartFile()
 {
     return QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-        + QStringLiteral("/autostart/diskwarden.desktop");
+        + QStringLiteral("/autostart/hdgushagi.desktop");
 }
 
 } // namespace
@@ -70,9 +70,9 @@ void AppSettings::setAutostart(bool enabled)
         if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             file.write("[Desktop Entry]\n"
                        "Type=Application\n"
-                       "Name=DiskWarden\n"
+                       "Name=HDGushagi\n"
                        "Comment=Disk health and temperature monitor\n"
-                       "Icon=diskwarden\n");
+                       "Icon=hdgushagi\n");
             file.write("Exec=\"" + QCoreApplication::applicationFilePath().toUtf8() + "\" --minimized\n");
             file.write("X-GNOME-Autostart-enabled=true\n");
         }
@@ -84,10 +84,10 @@ void AppSettings::setAutostart(bool enabled)
 
 int AppSettings::temperatureWarning(int kind) const
 {
-    switch (dw::DiskKind(kind)) {
-    case dw::DiskKind::Ssd:
+    switch (hg::DiskKind(kind)) {
+    case hg::DiskKind::Ssd:
         return ssdTemperatureWarning();
-    case dw::DiskKind::Nvme:
+    case hg::DiskKind::Nvme:
         return nvmeTemperatureWarning();
     default:
         return hddTemperatureWarning();
@@ -96,10 +96,10 @@ int AppSettings::temperatureWarning(int kind) const
 
 int AppSettings::temperatureCritical(int kind) const
 {
-    switch (dw::DiskKind(kind)) {
-    case dw::DiskKind::Ssd:
+    switch (hg::DiskKind(kind)) {
+    case hg::DiskKind::Ssd:
         return ssdTemperatureCritical();
-    case dw::DiskKind::Nvme:
+    case hg::DiskKind::Nvme:
         return nvmeTemperatureCritical();
     default:
         return hddTemperatureCritical();

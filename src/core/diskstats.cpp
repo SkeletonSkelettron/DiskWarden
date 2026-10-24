@@ -3,7 +3,7 @@
 #include <QByteArrayList>
 #include <algorithm>
 
-namespace dw {
+namespace hg {
 
 QHash<QString, DiskStat> parseDiskStats(const QByteArray &content)
 {
@@ -40,4 +40,4 @@ DiskRates diskRates(const DiskStat &previous, const DiskStat &current, double in
     return r;
 }
 
-} // namespace dw
+} // namespace hg

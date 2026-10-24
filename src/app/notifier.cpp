@@ -19,11 +19,11 @@ void Notifier::notify(const QString &title, const QString &body, int level)
         QStringLiteral("org.freedesktop.Notifications"), QStringLiteral("Notify"));
     QVariantMap hints;
     hints.insert(QStringLiteral("urgency"), QVariant::fromValue<uchar>(uchar(qBound(0, level, 2))));
-    hints.insert(QStringLiteral("desktop-entry"), QStringLiteral("diskwarden"));
+    hints.insert(QStringLiteral("desktop-entry"), QStringLiteral("hdgushagi"));
     const QString icon = level >= 2 ? QStringLiteral("dialog-error")
         : level == 1                ? QStringLiteral("dialog-warning")
                                     : QStringLiteral("drive-harddisk");
-    message << QStringLiteral("DiskWarden") << uint(0) << icon << title << body << QStringList() << hints
+    message << QStringLiteral("HDGushagi") << uint(0) << icon << title << body << QStringList() << hints
             << int(level >= 2 ? 0 : -1);
     QDBusConnection::sessionBus().asyncCall(message);
 }

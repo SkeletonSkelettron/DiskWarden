@@ -53,8 +53,8 @@ ThemedWindow {
     minimumWidth: 900
     minimumHeight: 580
     visible: false
-    title: disk ? qsTr("Disk: %1, %2 [%3]  -  DiskWarden %4").arg(disk.index).arg(disk.model).arg(disk.serial).arg(DiskManager.version)
-                : "DiskWarden " + DiskManager.version
+    title: disk ? qsTr("Disk: %1, %2 [%3]  -  HDGushagi %4").arg(disk.index).arg(disk.model).arg(disk.serial).arg(DiskManager.version)
+                : "HDGushagi " + DiskManager.version
 
     onCurrentTabChanged: AppSettings.currentTab = currentTab
 
@@ -201,7 +201,7 @@ ThemedWindow {
         Menu {
             title: qsTr("&Help")
             Action {
-                text: qsTr("&About DiskWarden")
+                text: qsTr("&About HDGushagi")
                 onTriggered: aboutDialog.open()
             }
         }
@@ -262,7 +262,7 @@ ThemedWindow {
             ToolSeparator {}
             ToolIconButton {
                 iconSource: "icons/about.svg"
-                tip: qsTr("About DiskWarden")
+                tip: qsTr("About HDGushagi")
                 onClicked: aboutDialog.open()
             }
         }

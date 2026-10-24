@@ -2,7 +2,7 @@
 
 #include <QTest>
 
-using namespace dw;
+using namespace hg;
 
 class TestDiskStats : public QObject
 {

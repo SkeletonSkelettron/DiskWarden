@@ -300,7 +300,7 @@ QHash<int, qint64> HistoryDb::lastRawValues(int diskId)
     return values;
 }
 
-void HistoryDb::addAttributes(int diskId, const QDateTime &time, const QList<dw::SmartAttribute> &attributes)
+void HistoryDb::addAttributes(int diskId, const QDateTime &time, const QList<hg::SmartAttribute> &attributes)
 {
     if (!m_open || diskId < 0)
         return;
@@ -321,7 +321,7 @@ void HistoryDb::addAttributes(int diskId, const QDateTime &time, const QList<dw:
     database.transaction();
     QSqlQuery query(database);
     query.prepare(QStringLiteral("INSERT INTO attributes (disk, ts, attr, value, raw) VALUES (?, ?, ?, ?, ?)"));
-    for (const dw::SmartAttribute &a : attributes) {
+    for (const hg::SmartAttribute &a : attributes) {
         auto previous = cache.constFind(a.id);
         const bool changed = previous == cache.cend() || previous->first != a.value || previous->second != a.raw;
         if (!changed)

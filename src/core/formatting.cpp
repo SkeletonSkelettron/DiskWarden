@@ -3,7 +3,7 @@
 #include <QCoreApplication>
 #include <QLocale>
 
-namespace dw {
+namespace hg {
 
 namespace {
 
@@ -91,4 +91,4 @@ QString ratingWord(int percent)
     return tr("Critical");
 }
 
-} // namespace dw
+} // namespace hg

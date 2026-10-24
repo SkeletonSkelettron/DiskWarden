@@ -3,7 +3,7 @@
 #include <QString>
 #include <QtGlobal>
 
-namespace dw {
+namespace hg {
 
 // "238.5 GB": binary units with one decimal, as disk sizes are shown.
 QString formatSize(qint64 bytes);
@@ -23,4 +23,4 @@ QString formatRawHex(qint64 raw);
 // Words for a health or performance percentage.
 QString ratingWord(int percent);
 
-} // namespace dw
+} // namespace hg

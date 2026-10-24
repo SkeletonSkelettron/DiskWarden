@@ -275,7 +275,7 @@ void SurfaceTest::openDevice()
         setState(Running);
         addLog(0, tr("%1 started: %2 blocks of %3")
                       .arg(m_mode == QuickRead ? tr("Quick read test") : tr("Read test"))
-                      .arg(QLocale().toString(m_blockCount), dw::formatSize(m_blockSize)));
+                      .arg(QLocale().toString(m_blockCount), hg::formatSize(m_blockSize)));
         m_pollTimer.start();
         m_temperatureTimer.start();
         sampleTemperature();

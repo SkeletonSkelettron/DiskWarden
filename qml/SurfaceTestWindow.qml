@@ -19,7 +19,7 @@ ThemedWindow {
     height: 700
     minimumWidth: 780
     minimumHeight: 540
-    title: qsTr("Surface Test - DiskWarden")
+    title: qsTr("Surface Test - HDGushagi")
 
     component Box: GroupBox {
         Layout.fillWidth: true

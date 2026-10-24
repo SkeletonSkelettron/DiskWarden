@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(DiskWarden VERSION 0.1.0 LANGUAGES CXX)
+project(HDGushagi VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(DISKWARDEN_BUILD_TESTS "Build the unit tests" ON)
+option(HDGUSHAGI_BUILD_TESTS "Build the unit tests" ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickControls2 DBus Sql)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
 # Logic that doesn't depend on D-Bus or QML, shared with the tests.
-add_library(diskwarden_core STATIC
+add_library(hdgushagi_core STATIC
     src/core/diskstats.cpp
     src/core/diskstats.h
     src/core/formatting.cpp
@@ -24,10 +24,10 @@ add_library(diskwarden_core STATIC
     src/core/sysfs.cpp
     src/core/sysfs.h
 )
-target_include_directories(diskwarden_core PUBLIC src/core)
-target_link_libraries(diskwarden_core PUBLIC Qt6::Core)
+target_include_directories(hdgushagi_core PUBLIC src/core)
+target_link_libraries(hdgushagi_core PUBLIC Qt6::Core)
 
-qt_add_executable(diskwarden
+qt_add_executable(hdgushagi
     src/main.cpp
 )
 
@@ -63,8 +63,8 @@ foreach(file ${QML_FILES})
 endforeach()
 set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
-qt_add_qml_module(diskwarden
-    URI DiskWarden
+qt_add_qml_module(hdgushagi
+    URI HDGushagi
     VERSION 1.0
     SOURCES
         src/app/appsettings.cpp
@@ -99,7 +99,7 @@ qt_add_qml_module(diskwarden
         icons/alerts.svg
         icons/check.svg
         icons/configure.svg
-        icons/diskwarden.svg
+        icons/hdgushagi.svg
         icons/error.svg
         icons/hdd.svg
         icons/help.svg
@@ -119,10 +119,10 @@ qt_add_qml_module(diskwarden
         icons/warning.svg
 )
 
-target_compile_definitions(diskwarden PRIVATE DISKWARDEN_VERSION="${PROJECT_VERSION}")
-target_include_directories(diskwarden PRIVATE src/app src/core)
-target_link_libraries(diskwarden PRIVATE
-    diskwarden_core
+target_compile_definitions(hdgushagi PRIVATE HDGUSHAGI_VERSION="${PROJECT_VERSION}")
+target_include_directories(hdgushagi PRIVATE src/app src/core)
+target_link_libraries(hdgushagi PRIVATE
+    hdgushagi_core
     Qt6::Gui
     Qt6::Widgets
     Qt6::Qml
@@ -133,16 +133,16 @@ target_link_libraries(diskwarden PRIVATE
 )
 
 include(GNUInstallDirs)
-install(TARGETS diskwarden RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES data/diskwarden.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES icons/diskwarden.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+install(TARGETS hdgushagi RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES data/hdgushagi.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES icons/hdgushagi.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
-if(DISKWARDEN_BUILD_TESTS)
+if(HDGUSHAGI_BUILD_TESTS)
     find_package(Qt6 REQUIRED COMPONENTS Test)
     enable_testing()
     foreach(test healthcalculator smartattribute diskstats formatting)
         qt_add_executable(tst_${test} tests/tst_${test}.cpp)
-        target_link_libraries(tst_${test} PRIVATE diskwarden_core Qt6::Test)
+        target_link_libraries(tst_${test} PRIVATE hdgushagi_core Qt6::Test)
         add_test(NAME ${test} COMMAND tst_${test})
     endforeach()
 endif()

@@ -1,10 +1,10 @@
-# DiskWarden
+# HDGushagi
 
 A disk health, temperature and S.M.A.R.T. monitor for Linux, built with Qt 6 and QML. Its look and features follow Hard Disk Sentinel on Windows: a list of disks with health and temperature on the left, and Overview, Temperature, S.M.A.R.T., Information, Log, Disk Performance and Alerts pages on the right.
 
 > **This project is entirely vibe-coded.** Every line of code, every icon and this README were written by an AI (Claude, in Claude Code). The author only described what they wanted in chat and never wrote or edited the code by hand. Read and test it with that in mind before you trust it with your disks.
 
-DiskWarden isn't affiliated with Hard Disk Sentinel or its authors.
+The name comes from the Georgian word გუშაგი (gushagi), a sentinel or sentry: a guard that watches over your hard disks. HDGushagi isn't affiliated with Hard Disk Sentinel or its authors.
 
 | Light theme | Dark theme (Palenight) |
 | --- | --- |
@@ -23,14 +23,14 @@ DiskWarden isn't affiliated with Hard Disk Sentinel or its authors.
 - **Alerts** as desktop notifications when a disk predicts failure, its health or temperature crosses a threshold, a new problem is logged or a volume runs out of space.
 - **Self-tests**: short, extended and conveyance tests run by the disk's firmware, with progress.
 - **Surface test**: a non-destructive read test of the whole disk (or a quick sampling one) with a block map colored by read speed, unreadable sector detection, and graphs of temperature and transfer speed over the disk.
-- **Tray icon** showing the highest temperature on a background colored by the worst status. Closing the window keeps DiskWarden running in the tray.
+- **Tray icon** showing the highest temperature on a background colored by the worst status. Closing the window keeps HDGushagi running in the tray.
 - **Light theme** in the classic Windows style and a **dark theme** after Material Palenight. By default the desktop's color scheme decides.
 
 ## How it works
 
-DiskWarden reads everything through [udisks2](https://github.com/storaged-project/udisks) on the system D-Bus, so monitoring doesn't need root. Hard disks in standby aren't woken up unless you allow it in the configuration. Self-tests and the surface test go through udisks2 as well and ask for the administrator password via polkit. The surface test opens the disk read-only.
+HDGushagi reads everything through [udisks2](https://github.com/storaged-project/udisks) on the system D-Bus, so monitoring doesn't need root. Hard disks in standby aren't woken up unless you allow it in the configuration. Self-tests and the surface test go through udisks2 as well and ask for the administrator password via polkit. The surface test opens the disk read-only.
 
-Temperatures, health, attribute changes, the log and the alerts are kept in an SQLite database in `~/.local/share/DiskWarden/`. Settings are in `~/.config/DiskWarden/DiskWarden.conf`.
+Temperatures, health, attribute changes, the log and the alerts are kept in an SQLite database in `~/.local/share/HDGushagi/`. Settings are in `~/.config/HDGushagi/HDGushagi.conf`.
 
 ### Health
 
@@ -64,7 +64,7 @@ Then:
 ```bash
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-./build/diskwarden
+./build/hdgushagi
 ```
 
 `ctest --test-dir build` runs the unit tests of the health calculation, attribute decoding and formatting. `cmake --install build` installs the program, its desktop entry and icon.
@@ -80,4 +80,4 @@ This is an early version. Monitoring, health, the pages, alerts, themes and the 
 
 ## License
 
-DiskWarden is free software, released under the [GNU General Public License version 2](LICENSE) (GPL-2.0-only).
+HDGushagi is free software, released under the [GNU General Public License version 2](LICENSE) (GPL-2.0-only).

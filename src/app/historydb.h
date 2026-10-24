@@ -9,7 +9,7 @@
 #include <QPointF>
 #include <QString>
 
-// SQLite store of everything DiskWarden remembers about the disks:
+// SQLite store of everything HDGushagi remembers about the disks:
 // temperature samples, health history, attribute changes, log and alerts.
 class HistoryDb
 {
@@ -69,7 +69,7 @@ public:
     int lastHealth(int diskId);
 
     // Stores the attributes whose value or raw data changed.
-    void addAttributes(int diskId, const QDateTime &time, const QList<dw::SmartAttribute> &attributes);
+    void addAttributes(int diskId, const QDateTime &time, const QList<hg::SmartAttribute> &attributes);
     QHash<int, qint64> lastRawValues(int diskId);
     QList<QPointF> attributeSeries(int diskId, int attributeId, bool normalized);
     // The raw value stored last at or before the given time, or the

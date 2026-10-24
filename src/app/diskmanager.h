@@ -99,6 +99,6 @@ private:
     QTimer m_temperatureTimer;
     QTimer m_volumeTimer;
     QTimer m_enumerateTimer;
-    QHash<QString, dw::DiskStat> m_lastStats;
+    QHash<QString, hg::DiskStat> m_lastStats;
     QElapsedTimer m_statsClock;
 };

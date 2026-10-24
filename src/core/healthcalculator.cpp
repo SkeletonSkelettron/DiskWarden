@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace dw {
+namespace hg {
 
 namespace {
 
@@ -375,4 +375,4 @@ HealthResult HealthCalculator::evaluate(const HealthInput &input)
     return r;
 }
 
-} // namespace dw
+} // namespace hg

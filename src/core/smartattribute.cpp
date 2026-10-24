@@ -5,7 +5,7 @@
 #include <QStringList>
 #include <cmath>
 
-namespace dw {
+namespace hg {
 
 bool SmartAttribute::failingNow() const
 {
@@ -190,4 +190,4 @@ const SmartAttribute *findAttribute(const QList<SmartAttribute> &attributes, int
     return nullptr;
 }
 
-} // namespace dw
+} // namespace hg

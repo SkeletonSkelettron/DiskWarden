@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <cmath>
 
-namespace dw {
+namespace hg {
 
 namespace {
 
@@ -222,4 +222,4 @@ double readHwmonTemperature(const QString &blockName)
     return std::numeric_limits<double>::quiet_NaN();
 }
 
-} // namespace dw
+} // namespace hg

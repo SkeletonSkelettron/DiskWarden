@@ -5,7 +5,7 @@ import QtQuick.Layouts
 Dialog {
     id: dialog
 
-    title: qsTr("About DiskWarden")
+    title: qsTr("About HDGushagi")
     modal: true
     width: 460
     anchors.centerIn: Overlay.overlay
@@ -16,13 +16,13 @@ Dialog {
 
         Image {
             Layout.alignment: Qt.AlignTop
-            source: "icons/diskwarden.svg"
+            source: "icons/hdgushagi.svg"
             sourceSize: Qt.size(64, 64)
         }
         ColumnLayout {
             spacing: 6
             Label {
-                text: "DiskWarden " + DiskManager.version
+                text: "HDGushagi " + DiskManager.version
                 font.pixelSize: 18
                 font.bold: true
                 color: Theme.strongText

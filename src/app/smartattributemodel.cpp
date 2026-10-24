@@ -43,11 +43,11 @@ int SmartAttributeModel::rowCount(const QModelIndex &parent) const
 
 QString SmartAttributeModel::dataText(const Row &row) const
 {
-    const dw::SmartAttribute &a = row.attribute;
+    const hg::SmartAttribute &a = row.attribute;
     if (!a.rawKnown)
         return QStringLiteral("?");
     if (AppSettings::instance()->hexData())
-        return dw::formatRawHex(a.raw);
+        return hg::formatRawHex(a.raw);
     QString text = QLocale().toString(a.raw);
     if (!row.unit.isEmpty())
         text += QLatin1Char(' ') + row.unit;
@@ -59,7 +59,7 @@ QVariant SmartAttributeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() >= m_rows.size())
         return {};
     const Row &row = m_rows[index.row()];
-    const dw::SmartAttribute &a = row.attribute;
+    const hg::SmartAttribute &a = row.attribute;
     auto number = [](int v) { return v >= 0 ? QString::number(v) : QString(); };
     switch (role) {
     case IdRole:
@@ -84,7 +84,7 @@ QVariant SmartAttributeModel::data(const QModelIndex &index, int role) const
     case EnabledRole:
         return !m_disabled.contains(a.id);
     case FlagsRole:
-        return m_nvme ? QString() : dw::attributeFlagsText(a.flags);
+        return m_nvme ? QString() : hg::attributeFlagsText(a.flags);
     case NormalizedRole:
         return a.value;
     default:
@@ -122,5 +122,5 @@ QString SmartAttributeModel::attributeName(int row) const
 
 QString SmartAttributeModel::flagsText(int row) const
 {
-    return row >= 0 && row < m_rows.size() && !m_nvme ? dw::attributeFlagsText(m_rows[row].attribute.flags) : QString();
+    return row >= 0 && row < m_rows.size() && !m_nvme ? hg::attributeFlagsText(m_rows[row].attribute.flags) : QString();
 }

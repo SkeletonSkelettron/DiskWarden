@@ -4,7 +4,7 @@
 #include <QString>
 #include <QtGlobal>
 
-namespace dw {
+namespace hg {
 
 // One line of /proc/diskstats.
 struct DiskStat {
@@ -27,4 +27,4 @@ struct DiskRates {
 
 DiskRates diskRates(const DiskStat &previous, const DiskStat &current, double intervalMs);
 
-} // namespace dw
+} // namespace hg

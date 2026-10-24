@@ -111,8 +111,8 @@ class Disk : public QObject
     Q_PROPERTY(QList<QPointF> utilizationAverage READ utilizationAverage NOTIFY perfChanged)
 
 public:
-    enum Kind { Unknown = int(dw::DiskKind::Unknown), Hdd = int(dw::DiskKind::Hdd),
-                Ssd = int(dw::DiskKind::Ssd), Nvme = int(dw::DiskKind::Nvme) };
+    enum Kind { Unknown = int(hg::DiskKind::Unknown), Hdd = int(hg::DiskKind::Hdd),
+                Ssd = int(hg::DiskKind::Ssd), Nvme = int(hg::DiskKind::Nvme) };
     Q_ENUM(Kind)
 
     explicit Disk(const QString &drivePath, QObject *parent = nullptr);
@@ -126,12 +126,12 @@ public:
     // udisks2 object tree.
     void update(const DBusManagedObjects &objects);
     void updateProperties(const QString &iface, const QVariantMap &changed);
-    void addPerfSample(const dw::DiskRates &rates, qint64 nowMs, double intervalMs);
+    void addPerfSample(const hg::DiskRates &rates, qint64 nowMs, double intervalMs);
     void pollTemperature();
     void updateVolumeUsage();
     const QList<VolumeInfo> &volumeInfos() const { return m_volumes; }
-    const QList<dw::SmartAttribute> &attributes() const { return m_attributes; }
-    const dw::NvmeHealth &nvmeHealth() const { return m_nvme; }
+    const QList<hg::SmartAttribute> &attributes() const { return m_attributes; }
+    const hg::NvmeHealth &nvmeHealth() const { return m_nvme; }
 
     int index() const { return m_index; }
     QString key() const { return m_key; }
@@ -241,7 +241,7 @@ private:
     void fetchProperties();
     void finishRefresh();
     void recompute(bool record);
-    dw::HealthInput healthInput() const;
+    hg::HealthInput healthInput() const;
     QList<SmartAttributeModel::Row> smartRows() const;
     void updateSmartModel();
     void recordHistory();
@@ -277,15 +277,15 @@ private:
     QString m_wwn;
     qint64 m_size = 0;
     int m_rotationRate = -1;
-    dw::DiskKind m_kind = dw::DiskKind::Unknown;
-    dw::LinkInfo m_link;
-    dw::QueueInfo m_queue;
+    hg::DiskKind m_kind = hg::DiskKind::Unknown;
+    hg::LinkInfo m_link;
+    hg::QueueInfo m_queue;
     QList<VolumeInfo> m_volumes;
     QList<VolumeInfo> m_partitions;
 
-    QList<dw::SmartAttribute> m_attributes;
-    dw::NvmeHealth m_nvme;
-    dw::HealthResult m_result;
+    QList<hg::SmartAttribute> m_attributes;
+    hg::NvmeHealth m_nvme;
+    hg::HealthResult m_result;
     bool m_smartRead = false;
     bool m_standby = false;
     bool m_updating = false;

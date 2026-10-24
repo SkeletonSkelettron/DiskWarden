@@ -45,9 +45,9 @@ QString objectPath(const QVariant &value);      // o
 QList<double> uint16List(const QVariant &value); // aq
 
 // Parses the reply of Drive.Ata.SmartGetAttributes().
-QList<dw::SmartAttribute> parseAtaAttributes(const QDBusMessage &reply);
+QList<hg::SmartAttribute> parseAtaAttributes(const QDBusMessage &reply);
 // Parses the reply of NVMe.Controller.SmartGetAttributes() together with
 // the controller's properties.
-dw::NvmeHealth parseNvmeHealth(const QVariantMap &attributes, const QVariantMap &controller);
+hg::NvmeHealth parseNvmeHealth(const QVariantMap &attributes, const QVariantMap &controller);
 
 } // namespace udisks

@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDir>
+#include <QFile>
 #include <QIcon>
 #include <QPalette>
 #include <QQmlApplicationEngine>
@@ -45,6 +46,23 @@ QPalette lightPalette()
     p.setColor(QPalette::Disabled, QPalette::Text, QColor(0x90, 0x90, 0x90));
     p.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(0x90, 0x90, 0x90));
     return p;
+}
+
+// The project was called DiskWarden at first: keep the settings and the
+// history of that version.
+void moveOldNameData()
+{
+    const QString config = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);
+    const QString data = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    const QString oldName = QStringLiteral("DiskWarden");
+    const QString newName = QStringLiteral("HDGushagi");
+    if (!QDir(config + QLatin1Char('/') + newName).exists() && QDir(config + QLatin1Char('/') + oldName).exists()) {
+        QDir().rename(config + QLatin1Char('/') + oldName, config + QLatin1Char('/') + newName);
+        QFile::rename(config + QLatin1Char('/') + newName + QLatin1Char('/') + oldName + QStringLiteral(".conf"),
+                      config + QLatin1Char('/') + newName + QLatin1Char('/') + newName + QStringLiteral(".conf"));
+    }
+    if (!QDir(data + QLatin1Char('/') + newName).exists() && QDir(data + QLatin1Char('/') + oldName).exists())
+        QDir().rename(data + QLatin1Char('/') + oldName, data + QLatin1Char('/') + newName);
 }
 
 // --screenshot: renders the pages of the main window, the configuration
@@ -96,11 +114,11 @@ void takeScreenshots(QQuickWindow *window, const QString &directory, int disk)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setOrganizationName(QStringLiteral("DiskWarden"));
-    app.setApplicationName(QStringLiteral("DiskWarden"));
-    app.setApplicationVersion(QStringLiteral(DISKWARDEN_VERSION));
-    app.setDesktopFileName(QStringLiteral("diskwarden"));
-    app.setWindowIcon(QIcon(QStringLiteral(":/qt/qml/DiskWarden/icons/diskwarden.svg")));
+    app.setOrganizationName(QStringLiteral("HDGushagi"));
+    app.setApplicationName(QStringLiteral("HDGushagi"));
+    app.setApplicationVersion(QStringLiteral(HDGUSHAGI_VERSION));
+    app.setDesktopFileName(QStringLiteral("hdgushagi"));
+    app.setWindowIcon(QIcon(QStringLiteral(":/qt/qml/HDGushagi/icons/hdgushagi.svg")));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Disk health and temperature monitor"));
@@ -113,11 +131,12 @@ int main(int argc, char *argv[])
     parser.addOptions({minimized, screenshot, screenshotDisk});
     parser.process(app);
 
+    moveOldNameData();
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
     app.setPalette(lightPalette());
 
     HistoryDb::instance().open(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-                               + QStringLiteral("/DiskWarden/history.sqlite"));
+                               + QStringLiteral("/HDGushagi/history.sqlite"));
 
     DiskManager *manager = DiskManager::instance();
     manager->start();
@@ -129,7 +148,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
-    engine.loadFromModule("DiskWarden", "Main");
+    engine.loadFromModule("HDGushagi", "Main");
     if (engine.rootObjects().isEmpty())
         return 1;
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());

@@ -50,7 +50,7 @@ DiskManager *DiskManager::create(QQmlEngine *, QJSEngine *)
 
 QString DiskManager::version() const
 {
-    return QStringLiteral(DISKWARDEN_VERSION);
+    return QStringLiteral(HDGUSHAGI_VERSION);
 }
 
 void DiskManager::start()
@@ -249,7 +249,7 @@ void DiskManager::samplePerformance()
     QFile file(QStringLiteral("/proc/diskstats"));
     if (!file.open(QIODevice::ReadOnly))
         return;
-    const QHash<QString, dw::DiskStat> stats = dw::parseDiskStats(file.readAll());
+    const QHash<QString, hg::DiskStat> stats = hg::parseDiskStats(file.readAll());
     const double interval = double(m_statsClock.restart());
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
     for (Disk *disk : std::as_const(m_disks)) {
@@ -258,7 +258,7 @@ void DiskManager::samplePerformance()
             continue;
         auto previous = m_lastStats.constFind(disk->blockName());
         if (previous != m_lastStats.cend())
-            disk->addPerfSample(dw::diskRates(*previous, *current, interval), now, interval);
+            disk->addPerfSample(hg::diskRates(*previous, *current, interval), now, interval);
     }
     m_lastStats = stats;
 }

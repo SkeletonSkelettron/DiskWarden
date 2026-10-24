@@ -35,7 +35,7 @@ public:
     };
 
     struct Row {
-        dw::SmartAttribute attribute;
+        hg::SmartAttribute attribute;
         int level = 0;          // 0 ok, 1 warning, 2 failing
         QString status;
         QString unit;           // NVMe rows: unit of the data

@@ -9,7 +9,7 @@
 #include <QStringList>
 #include <limits>
 
-namespace dw {
+namespace hg {
 
 // The NVMe SMART / health information log page.
 struct NvmeHealth {
@@ -91,11 +91,11 @@ public:
     static double attributeDeduction(int id, qint64 count);
 
     // Raw data of an attribute as it counts against health: offset applied,
-    // lower 16 bits, Seagate's packed seek error rate unpacked.
+    // lower 16 bits, seek error rates that are rates rather than counts ignored.
     static qint64 healthCount(const HealthInput &input, const SmartAttribute &a);
 
     static int remainingLifetimeDays(DiskKind kind, int health, qint64 powerOnHours, int hotDays,
                                      bool wearBased);
 };
 
-} // namespace dw
+} // namespace hg

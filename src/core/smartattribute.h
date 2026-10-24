@@ -4,7 +4,7 @@
 #include <QString>
 #include <QtGlobal>
 
-namespace dw {
+namespace hg {
 
 enum class DiskKind { Unknown, Hdd, Ssd, Nvme };
 
@@ -61,4 +61,4 @@ QString attributeFlagsText(int flags);
 // Looks up an attribute by id; returns nullptr when it isn't there.
 const SmartAttribute *findAttribute(const QList<SmartAttribute> &attributes, int id);
 
-} // namespace dw
+} // namespace hg

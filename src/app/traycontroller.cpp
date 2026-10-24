@@ -17,7 +17,7 @@ TrayController::TrayController(QObject *parent)
         return;
     m_tray = new QSystemTrayIcon(this);
     m_menu = new QMenu();
-    m_menu->addAction(tr("Show DiskWarden"), this, &TrayController::showWindow);
+    m_menu->addAction(tr("Show HDGushagi"), this, &TrayController::showWindow);
     m_menu->addAction(tr("Refresh"), DiskManager::instance(), &DiskManager::refresh);
     m_menu->addSeparator();
     m_menu->addAction(tr("Configuration..."), this, [this] {
@@ -79,7 +79,7 @@ void TrayController::update()
     DiskManager *manager = DiskManager::instance();
     double hottest = std::numeric_limits<double>::quiet_NaN();
     QStringList lines;
-    lines << QStringLiteral("DiskWarden");
+    lines << QStringLiteral("HDGushagi");
     for (Disk *disk : manager->disks()) {
         if (disk->hasTemperature() && (std::isnan(hottest) || disk->temperature() > hottest))
             hottest = disk->temperature();

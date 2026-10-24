@@ -3,7 +3,7 @@
 #include <QLocale>
 #include <QTest>
 
-using namespace dw;
+using namespace hg;
 
 class TestFormatting : public QObject
 {

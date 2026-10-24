@@ -77,9 +77,9 @@ QList<double> uint16List(const QVariant &value)
     return result;
 }
 
-QList<dw::SmartAttribute> parseAtaAttributes(const QDBusMessage &reply)
+QList<hg::SmartAttribute> parseAtaAttributes(const QDBusMessage &reply)
 {
-    QList<dw::SmartAttribute> attributes;
+    QList<hg::SmartAttribute> attributes;
     if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().isEmpty())
         return attributes;
     const QDBusArgument arg = reply.arguments().constFirst().value<QDBusArgument>();
@@ -99,15 +99,15 @@ QList<dw::SmartAttribute> parseAtaAttributes(const QDBusMessage &reply)
         arg.beginStructure();
         arg >> id >> name >> flags >> value >> worst >> threshold >> pretty >> unit >> expansion;
         arg.endStructure();
-        attributes << dw::decodeUdisksAttribute(id, name, flags, value, worst, threshold, pretty, unit);
+        attributes << hg::decodeUdisksAttribute(id, name, flags, value, worst, threshold, pretty, unit);
     }
     arg.endArray();
     return attributes;
 }
 
-dw::NvmeHealth parseNvmeHealth(const QVariantMap &attributes, const QVariantMap &controller)
+hg::NvmeHealth parseNvmeHealth(const QVariantMap &attributes, const QVariantMap &controller)
 {
-    dw::NvmeHealth n;
+    hg::NvmeHealth n;
     n.valid = !attributes.isEmpty();
     auto number = [&](const char *key, qint64 fallback = -1) -> qint64 {
         const QVariant v = attributes.value(QLatin1String(key));
@@ -139,15 +139,15 @@ dw::NvmeHealth parseNvmeHealth(const QVariantMap &attributes, const QVariantMap 
     const QStringList warnings = stringList(controller.value(QStringLiteral("SmartCriticalWarning")));
     for (const QString &w : warnings) {
         if (w == QLatin1String("spare"))
-            n.criticalWarning |= dw::NvmeSpareLow;
+            n.criticalWarning |= hg::NvmeSpareLow;
         else if (w == QLatin1String("temperature"))
-            n.criticalWarning |= dw::NvmeTemperature;
+            n.criticalWarning |= hg::NvmeTemperature;
         else if (w == QLatin1String("degraded"))
-            n.criticalWarning |= dw::NvmeReliabilityDegraded;
+            n.criticalWarning |= hg::NvmeReliabilityDegraded;
         else if (w == QLatin1String("readonly") || w == QLatin1String("pmr_readonly"))
-            n.criticalWarning |= dw::NvmeReadOnly;
+            n.criticalWarning |= hg::NvmeReadOnly;
         else if (w == QLatin1String("volatile_mem"))
-            n.criticalWarning |= dw::NvmeVolatileBackupFailed;
+            n.criticalWarning |= hg::NvmeVolatileBackupFailed;
     }
     return n;
 }

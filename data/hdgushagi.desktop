@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=DiskWarden
+Name=HDGushagi
 GenericName=Disk Health Monitor
 Comment=Monitor the health, temperature and performance of hard disks and SSDs
-Exec=diskwarden
-Icon=diskwarden
+Exec=hdgushagi
+Icon=hdgushagi
 Terminal=false
 Categories=System;Monitor;Qt;
 Keywords=disk;hdd;ssd;nvme;smart;health;temperature;surface;

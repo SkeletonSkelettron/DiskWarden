@@ -17,7 +17,7 @@ Dialog {
         open()
     }
 
-    title: qsTr("Configuration - DiskWarden")
+    title: qsTr("Configuration - HDGushagi")
     modal: true
     width: 700
     height: 470
@@ -143,7 +143,7 @@ Dialog {
                         onToggled: AppSettings.startMinimized = checked
                     }
                     CheckBox {
-                        text: qsTr("Start DiskWarden when I log in")
+                        text: qsTr("Start HDGushagi when I log in")
                         checked: AppSettings.autostart
                         onToggled: AppSettings.autostart = checked
                     }
