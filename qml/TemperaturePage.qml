@@ -38,6 +38,8 @@ Item {
             Layout.preferredWidth: 160
             mode: 2
             value: row.known ? row.value / 80 : 0
+            warningAt: page.warningLevel / 80
+            criticalAt: page.criticalLevel / 80
             text: row.known ? Theme.temperatureText(row.value, row.decimals) : "?"
         }
         Label {

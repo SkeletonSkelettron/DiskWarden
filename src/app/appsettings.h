@@ -45,17 +45,17 @@ public:
 
     int detectionMinutes() const { return intValue("detectionMinutes", 5); }
     void setDetectionMinutes(int v) { setValue("detectionMinutes", v); }
-    int hddTemperatureWarning() const { return intValue("hddTemperatureWarning", 45); }
+    int hddTemperatureWarning() const { return intValue("hddTemperatureWarning", 50); }
     void setHddTemperatureWarning(int v) { setValue("hddTemperatureWarning", v); }
-    int hddTemperatureCritical() const { return intValue("hddTemperatureCritical", 55); }
+    int hddTemperatureCritical() const { return intValue("hddTemperatureCritical", 60); }
     void setHddTemperatureCritical(int v) { setValue("hddTemperatureCritical", v); }
-    int ssdTemperatureWarning() const { return intValue("ssdTemperatureWarning", 55); }
+    int ssdTemperatureWarning() const { return intValue("ssdTemperatureWarning", 50); }
     void setSsdTemperatureWarning(int v) { setValue("ssdTemperatureWarning", v); }
-    int ssdTemperatureCritical() const { return intValue("ssdTemperatureCritical", 65); }
+    int ssdTemperatureCritical() const { return intValue("ssdTemperatureCritical", 60); }
     void setSsdTemperatureCritical(int v) { setValue("ssdTemperatureCritical", v); }
-    int nvmeTemperatureWarning() const { return intValue("nvmeTemperatureWarning", 65); }
+    int nvmeTemperatureWarning() const { return intValue("nvmeTemperatureWarning", 50); }
     void setNvmeTemperatureWarning(int v) { setValue("nvmeTemperatureWarning", v); }
-    int nvmeTemperatureCritical() const { return intValue("nvmeTemperatureCritical", 75); }
+    int nvmeTemperatureCritical() const { return intValue("nvmeTemperatureCritical", 60); }
     void setNvmeTemperatureCritical(int v) { setValue("nvmeTemperatureCritical", v); }
     int healthWarning() const { return intValue("healthWarning", 50); }
     void setHealthWarning(int v) { setValue("healthWarning", v); }

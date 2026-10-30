@@ -101,7 +101,7 @@ Rectangle {
             height: 16
             mode: 1
             value: 1
-            fillColor: card.disk.hasTemperature ? Theme.levelColor(card.disk.temperatureLevel) : Theme.cardBorder
+            fillColor: card.disk.hasTemperature ? Theme.temperatureColor(card.disk.temperatureLevel) : Theme.cardBorder
             text: card.disk.hasTemperature ? Theme.temperatureText(card.disk.temperature)
                 : card.disk.standby ? qsTr("standby") : qsTr("? °C")
         }

@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 
 // The bars of the main window. Modes: 0 health gradient (red to green),
-// 1 solid color, 2 temperature gradient, 3 used (blue) and free (magenta)
-// space.
+// 1 solid color, 2 temperature bands (green, orange, red), 3 used (blue)
+// and free (magenta) space.
 Rectangle {
     id: bar
 
@@ -12,8 +12,24 @@ Rectangle {
     property int mode: 0
     property color fillColor: Theme.good
     property bool boldText: false
+    // Where the orange and the red temperature bands start.
+    property real warningAt: 0.625
+    property real criticalAt: 0.75
 
     readonly property real clamped: Math.max(0, Math.min(1, value))
+
+    // One band of a temperature bar.
+    component Band: Rectangle {
+        property real from
+        property real to
+        property color bandColor
+        width: (bar.width - 2) * Math.max(0, Math.min(1, to) - Math.max(0, from))
+        height: parent.height
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: Qt.lighter(bandColor, 1.2) }
+            GradientStop { position: 1.0; color: bandColor }
+        }
+    }
 
     implicitWidth: 150
     implicitHeight: 18
@@ -39,17 +55,24 @@ Rectangle {
                 GradientStop { position: 1.0; color: Theme.healthHigh }
             }
         }
-        Rectangle {
+        Row {
             visible: bar.mode === 2
-            width: bar.width - 2
             height: parent.height
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.temperature1 }
-                GradientStop { position: 0.5; color: Theme.temperature2 }
-                GradientStop { position: 0.68; color: Theme.temperature3 }
-                GradientStop { position: 0.85; color: Theme.temperature4 }
-                GradientStop { position: 1.0; color: Theme.temperature5 }
+
+            Band {
+                from: 0
+                to: bar.warningAt
+                bandColor: Theme.temperatureColor(0)
+            }
+            Band {
+                from: bar.warningAt
+                to: bar.criticalAt
+                bandColor: Theme.temperatureColor(1)
+            }
+            Band {
+                from: bar.criticalAt
+                to: 1
+                bandColor: Theme.temperatureColor(2)
             }
         }
         Rectangle {

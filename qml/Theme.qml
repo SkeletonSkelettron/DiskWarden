@@ -47,11 +47,11 @@ QtObject {
     readonly property color healthLow: dark ? "#f07178" : "#ff3030"
     readonly property color healthMiddle: dark ? "#ffcb6b" : "#ffe83a"
     readonly property color healthHigh: dark ? "#c3e88d" : "#30d030"
-    readonly property color temperature1: dark ? "#c3e88d" : "#30c830"
-    readonly property color temperature2: dark ? "#d9e88a" : "#a8e040"
-    readonly property color temperature3: dark ? "#ffcb6b" : "#ffd83a"
-    readonly property color temperature4: dark ? "#f78c6c" : "#ff8a2a"
-    readonly property color temperature5: dark ? "#f07178" : "#ff3030"
+    // Temperatures: green below the warning level (50 °C by default),
+    // orange up to the critical level (60 °C), red above it.
+    readonly property color temperatureNormal: dark ? "#c3e88d" : "#4cc84c"
+    readonly property color temperatureWarm: dark ? "#ffa05a" : "#ff9a2e"
+    readonly property color temperatureHot: dark ? "#ff5370" : "#f04848"
     readonly property color usedTop: dark ? "#82aaff" : "#4848ff"
     readonly property color usedBottom: dark ? "#5a7fd6" : "#1414b4"
     readonly property color freeTop: dark ? "#c792ea" : "#ff70ff"
@@ -107,6 +107,10 @@ QtObject {
 
     function levelColor(level) {
         return level >= 2 ? critical : level === 1 ? warning : good
+    }
+
+    function temperatureColor(level) {
+        return level >= 2 ? temperatureHot : level === 1 ? temperatureWarm : temperatureNormal
     }
 
     function temperatureText(value, decimals) {
